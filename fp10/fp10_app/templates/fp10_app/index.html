@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extraCss %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{% static 'fp10_app/css/form.css' %}">
+<link rel="stylesheet" href="{% static 'fp10_app/css/activity.css' %}">
+{% endblock extraCss %}
+
+{% block content %}
+<h1 style="text-align: center;">Welcome {{user.first_name}} {{user.last_name}}</h1>
+{% if user.is_authenticated %}
+<a href="/chat" class="chat" style="display: block; width: 10%; margin-left: 45%;">ChatApp</a>
+
+<div class="activity">
+    <h1 style="text-align: center;">Create Activity</h1>
+    
+    <section class="main">
+        
+        
+        
+        <div class="wrap wrap--1">
+            <div class="container container--1" style="background: linear-gradient(hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, .1)), url('https://images.unsplash.com/photo-1526512340740-9217d0159da9?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-repeat: no-repeat; height: fit-content; width: fit-content;">
+                <form method="post" enctype="multipart/form-data" action="{% url 'fp10_app:create_activity' %}" style="z-index: 9999999999999;">
+                    {% csrf_token %}
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Text:</label>
+                            <textarea id="text" name="text" required style="background-color: rgba(255, 255, 255, 0.07);"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="picture">Picture:</label>
+                            <input type="file" id="picture" name="picture" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_time">Start Time:</label>
+                            <input type="datetime-local" id="start_time" name="start_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_time">End Time:</label>
+                            <input type="datetime-local" id="end_time" name="end_time" required>
+                        </div>
+                        <button type="submit" style="color: #000000;">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+      
+    
+    </section>
+    
+   
+</div>
+
+<div class="activity">
+    <h1 style="text-align: center;">Activities</h1>
+    
+    <section class="main">
+        {% for act in activity %}
+        
+        
+      <div class="wrap wrap--1">
+        <div class="container container--1" style="background: linear-gradient(hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, .1)), url('{{ act.picture.url }}'); background-size: contain; background-repeat: no-repeat;">
+          <p class="card-owner">{{act.owner}}</p>
+          <p>{{act.title}}</p>
+          <p class="card-text">{{act.text}}</p>
+          <form method="post" action="{% url 'fp10_app:join_activity' act.id %}">
+            {% csrf_token %}
+            <button type="submit" style="z-index: 999999999999999; position: absolute; top: 300px; left: 100px; width: fit-content;" >Join the activity</button>
+        </form>
+          <p class="card-start">{{act.start_time}}</p>
+          <p class="card-end">{{act.end_time}}</p>
+        </div>
+      </div>
+        {% endfor %}
+      
+    
+    </section>
+    
+   
+</div>
+
+<form method="post" action="{% url 'logout' %}?next=/" class="log">
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+</form>
+{% if user.is_email_verified %}
+{% else %}
+<div class="alert">
+    <i class="fa-solid fa-x fa-2xl" style="color: #000000;"></i>
+    <h1>Okul kartınızın fotoğrafını yükledikten sonra hesabınız aktif hale gelicektir</h1>
+    <form action="{% url 'fp10_app:student_card_verification'%}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>Foto</h3>
+        <label for="student-card-photo">Gönder</label>
+        <input type="file" id="student-card-photo" name="student-card-photo">    
+        <button type="submit" >Giriş Yap</button>
+      </form>
+  </div>
+  {% endif %}
+{% else %}
+<a href="/login" class="chat">Giriş yapın</a>
+{% endif %}
+
+{% endblock content %}
+
+{% block extraJs %}
+    <script src="{% static 'fp10_app/js/alert.js' %}"></script>
+{% endblock extraJs %}

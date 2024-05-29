@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+}
+header {
+    margin: 0;
+    background-color: black;
+    align-items: center;
+    min-height: 100px;
+    position: sticky;
+    z-index: 99999999999;
+}
+header img {
+    width: 20%;
+    margin-left: 40%;
+    margin-right: 40%;
+    min-height: 100px;
+    max-width: 200px;
+}
